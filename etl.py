@@ -44,3 +44,4 @@ df = steps_df \
     [['steps', 'mean_heart_rate', 'heart_rate_sdev', 'awake', 'deep_sleep', 'light_sleep', 'rem_sleep', 'unknown']]
 
 print(df.head())
+df.to_csv('data/training_data.csv')
