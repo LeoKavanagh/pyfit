@@ -23,7 +23,7 @@ def index():
   state = request.args.get('state', None)
   code = request.args.get('code', None)
 
-  return ('Code = {}'.format(code))
+  return ('{}'.format(code))
 
 
 if __name__ == '__main__':
