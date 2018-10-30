@@ -79,8 +79,7 @@ def authorize():
         r = requests.get('http://127.0.0.1:8080')
         print('done')
     except ConnectionError:
-        print('Turn on the flask server')
-        return None
+        raise ConnectionError('Turn on the flask server')
 
 
     secrets_file = os.environ['GOOGLE_WEB_APPLICATION_CREDENTIALS']

@@ -20,7 +20,7 @@ def index():
   """
   Life is too short to do this properly
   """
-  state = request.args.get('state', None)
+  # state = request.args.get('state', None)
   code = request.args.get('code', None)
 
   return ('{}'.format(code))
