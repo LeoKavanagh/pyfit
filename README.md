@@ -47,4 +47,14 @@ mlflow pyfunc predict -m svr_model -r 3351dc69051240fe86d2bb02412e3069 -i ../dat
 
 You can print to console or optionally save the results to a file using the `-o output_file_name.csv` flag.
 
+## Prediction REST API
 
+Get a prediction from the REST API with 
+```
+mlflow sklearn serve -m mlruns/0/b72c2bd575704eefa564737c1c97ccfd/artifacts/gbr_model/
+```
+Then in a different terminal send json inputs to the `predict` method of the sklearn model.
+```
+data=$(cat datsets/test_data.json)
+curl -d $data -H 'Content-Type: application/json' -X POST localhost:5000/invocations
+```
