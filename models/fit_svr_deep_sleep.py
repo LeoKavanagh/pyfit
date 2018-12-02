@@ -55,7 +55,7 @@ def main():
 
         mlflow.sklearn.log_model(best_estimator, 'svr_model')
 
-        plot_save_location = 'deep_sleep_regplot.png'
+        plot_save_location = 'svr_deep_sleep_regplot.png'
         plot = sns.regplot(y_test, preds).get_figure()
         plot.savefig(plot_save_location)
         mlflow.log_artifact(plot_save_location)

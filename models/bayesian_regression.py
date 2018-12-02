@@ -21,14 +21,14 @@ seed=314159
 
 # Data
 full_df = pd \
-    .read_csv('datasets/processed_fitbit_df_r.csv') \
+    .read_csv('datasets/processed_fitbit_df.csv') \
     .dropna()
 
-X = full_df[['steps', 'mean_rate', 'sd_rate', 'dsp_lag', 
+X = full_df[['steps', 'mean_rate', 'rate_range', 'dsp_lag', 
              'deep_sleep_prop']]
 
 # patsy lets you use R-style formulas in models
-fml = 'deep_sleep_prop ~ mean_rate + sd_rate + dsp_lag'
+fml = 'deep_sleep_prop ~ mean_rate + rate_range + dsp_lag'
 
 with pm.Model() as model_robust:
     family = pm.glm.families.StudentT()
@@ -36,6 +36,7 @@ with pm.Model() as model_robust:
     trace_robust = pm.sample(20000, tune=5000, njobs=4, chains=4, 
                              step=pm.Metropolis())
 
+stats = ['mean','hpd_2.5','hpd_97.5']
 print(pm.summary(trace_robust, 
                  varnames=model_robust.unobserved_RVs)[stats])
 
@@ -55,15 +56,14 @@ print(pm.summary(trc2, varnames=mdl2.unobserved_RVs)[stats])
 
 plt.show()
 
-stats = ['mean','hpd_2.5','hpd_97.5']
 percentiles = [2.5, 50, 97.5]
 print(pm.summary(trc2,  varnames=mdl2.unobserved_RVs)[stats])
 print('mean_rate: ', np.percentile(trc2['mean_rate'], percentiles))
-print('sd_rate: ', np.percentile(trc2['sd_rate'], percentiles))
+print('rate_range: ', np.percentile(trc2['rate_range'], percentiles))
 print('dsp_lag: ', np.percentile(trc2['dsp_lag'], percentiles))
 
 # read in the data & create matrices
-sm_y, sm_X = dmatrices(fml, X, return_type = 'dataframe')
+sm_y, sm_X = dmatrices(fml + ' + steps', X, return_type = 'dataframe')
 # sm
 ols = sm.lm.OLS(sm_y, sm_X).fit()
 print(ols.summary())
@@ -84,7 +84,7 @@ Covariance Type:            nonrobust
 ------------------------------------------------------------------------------
 Intercept     -0.1176      0.108     -1.093      0.276      -0.330       0.095
 mean_rate      0.0048      0.001      3.220      0.002       0.002       0.008
-sd_rate       -0.0029      0.001     -2.000      0.047      -0.006   -4.07e-05
+rate_range       -0.0029      0.001     -2.000      0.047      -0.006   -4.07e-05
 dsp_lag        0.2040      0.069      2.968      0.003       0.068       0.339
 ==============================================================================
 Omnibus:                        1.957   Durbin-Watson:                   1.965

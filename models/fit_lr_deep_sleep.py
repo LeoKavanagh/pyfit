@@ -42,13 +42,13 @@ def main():
         mlflow.log_param('seed', seed)
         mlflow.sklearn.log_model(best_estimator, 'lr_model')
 
-        plot_save_location = 'deep_sleep_distplot.png'
+        plot_save_location = 'lr_deep_sleep_distplot.png'
         plt.close()
         plot = sns.distplot(y_test).get_figure()
         plot.savefig(plot_save_location)
         mlflow.log_artifact(plot_save_location)
 
-        plot_save_location = 'deep_sleep_regplot.png'
+        plot_save_location = 'lr_deep_sleep_regplot.png'
         plt.close()
         plot = sns.regplot(y_test, preds).get_figure()
         plot.savefig(plot_save_location)
