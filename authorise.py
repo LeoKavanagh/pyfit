@@ -76,7 +76,7 @@ def get_access_token(secrets_file, code):
 def authorize():
 
     try:    
-        r = requests.get('http://127.0.0.1:8080')
+        r = requests.get('http://0.0.0.0:8080')
         print('done')
     except ConnectionError:
         raise ConnectionError('Turn on the flask server')
