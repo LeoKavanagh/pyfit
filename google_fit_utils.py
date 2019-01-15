@@ -95,8 +95,11 @@ def process_heart(heart_dict):
     hr_by_day = heart_df.groupby('date')
     heart_df['mean_heart_rate'] = hr_by_day.heart_rate.mean()
     heart_df['heart_rate_sdev'] = hr_by_day.heart_rate.std()
+    heart_df['heart_rate_range'] = (hr_by_day.heart_rate.max() -
+                                    hr_by_day.heart_rate.min())
 
-    heart_df= heart_df[['mean_heart_rate', 'heart_rate_sdev']] \
+    heart_df= heart_df[['mean_heart_rate', 'heart_rate_sdev',
+                        'heart_rate_range']] \
         .drop_duplicates()
 
     return heart_df
