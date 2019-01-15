@@ -4,7 +4,7 @@ library(dplyr)
 
 all_heart = read.csv('data/fitbit/heart/all_heart.csv')
 all_steps = read.csv('data/fitbit/steps/fitbit_step_all.csv')
-all_sleep = read.csv('data/fitbit/sleep/all_sleep.csv')
+all_sleep = read.csv('data/fitbit/sleep/fitbit_final_sleep_df.csv')
 
 sleep = all_sleep %>%
 	select(date, minutesAwake, 
@@ -25,7 +25,8 @@ heart = all_heart %>%
 	group_by(date) %>%
 	mutate(mean_rate = mean(heart_rate)) %>%
 	mutate(sd_rate = sd(heart_rate)) %>%
-	select(date, mean_rate, sd_rate) %>%
+	mutate(rate_range = max(heart_rate) - min(heart_rate)) %>%
+	select(date, mean_rate, sd_rate, rate_range) %>%
 	distinct()
 
 # join
@@ -36,7 +37,7 @@ full_df = heart %>%
 	tbl_df() %>%
 	mutate(date = as.Date(date))
 
-full_df$dow = weekdays(as.Date(df$date))
+full_df$dow = weekdays(full_df$date)
 full_df$weekend_night = 1.0 * full_df$dow %in% c('Friday', 'Saturday')
 
 # save
