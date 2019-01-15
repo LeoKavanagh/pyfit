@@ -44,10 +44,11 @@ auth2_client.get_sleep_range = get_sleep_range
 
 start_date = dt.date(2018, 1, 1)
 day_date = start_date + dt.timedelta(99)
-end_date = datetime.date.today() - datetime.timedelta(days=1)
+end_date = dt.date.today() - dt.timedelta(days=1)
 
 sleep_range = auth2_client \
-    .get_sleep_range(start_date.strftime('%Y-%m-%d'),
+    .get_sleep_range(auth2_client,
+                     start_date.strftime('%Y-%m-%d'),
                      day_date.strftime('%Y-%m-%d'))
 
 sleep_df = pd.DataFrame((x['dateOfSleep'], x['duration'], x['efficiency'], 
@@ -67,7 +68,7 @@ final_sleep_df = sleep_df.copy()
 
 while day_date < end_date:
 
-    days_to_end_date = (final_date - day_date).days
+    days_to_end_date = (end_date - day_date).days
     increment = min(days_to_end_date, 99)
 
     new_start_date = day_date
@@ -75,7 +76,8 @@ while day_date < end_date:
 
 
     sleep_range = auth2_client \
-        .get_sleep_range(new_start_date.strftime('%Y-%m-%d'),
+        .get_sleep_range(auth2_client,
+                         new_start_date.strftime('%Y-%m-%d'),
                          day_date.strftime('%Y-%m-%d'))
 
     sleep_df = pd.DataFrame((x['dateOfSleep'], x['duration'], x['efficiency'], 
@@ -90,8 +92,10 @@ while day_date < end_date:
     'minutesAsleep', 'minutesDeepSleep', 'minutesLightSleep', 'minutesREMSleep',
     'minutesWake']
 
-    final_sleep_df = final_sleep_df.append(sleep_df)
-
+    if sleep_df.shape[0]:
+        final_sleep_df = final_sleep_df.append(sleep_df)
+    else:
+        break
 
 final_sleep_df.to_csv('data/fitbit_final_sleep_df.csv')
 
@@ -99,13 +103,13 @@ final_sleep_df.to_csv('data/fitbit_final_sleep_df.csv')
 
 # Get all the heart rate data
 # Can't remember when I got either watch so I'll go from January 1st 2018 to August 1st 2018
-end_date = datetime.date(2018, 8, 1)
+end_date = dt.date(2018, 8, 1)
 # day_date = datetime.date(2017, 12, 31)
-day_date = datetime.date(2018, 6, 6)
+day_date = dt.date(2018, 6, 6)
 
 while day_date < end_date:
 
-    day_date = day_date + datetime.timedelta(days=1)
+    day_date = day_date + dt.timedelta(days=1)
     str_date = str(day_date.strftime("%Y-%m-%d"))
 
     print(str_date)
@@ -131,13 +135,13 @@ time_list = []
 val_list = []
 
 
-    end_date = datetime.date(2018, 8, 1)
-    day_date = datetime.date(2018, 4, 1)
+    end_date = dt.date(2018, 8, 1)
+    day_date = dt.date(2018, 4, 1)
 
 
     while day_date < end_date:
 
-        day_date = day_date + datetime.timedelta(days=1)
+        day_date = day_date + dt.timedelta(days=1)
         str_date = str(day_date.strftime("%Y-%m-%d"))
         print(str_date)
 
