@@ -16,10 +16,10 @@ def main():
     seed=314159
 
     full_df = pd \
-        .read_csv('../datasets/processed_fitbit_df_r.csv') \
+        .read_csv('../datasets/combined_data.csv') \
         .dropna()
 
-    X = full_df[['steps', 'mean_rate', 'sd_rate', 'dsp_lag']]
+    X = full_df[['mean_rate', 'sd_rate', 'rate_range', 'dsp_lag']]
     y = full_df['deep_sleep_prop']
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75, random_state=seed)
@@ -32,7 +32,7 @@ def main():
 
     param_grid = {'model__loss': ['ls', 'lad', 'huber'],
                   'model__learning_rate': [0.01, 0.1, 0.5],
-                  'model__n_estimators': [2, 5, 10],
+                  'model__n_estimators': [2, 5, 10, 100, 1000],
                   'model__subsample': [0.5, 0.75]}
 
     grid_search = GridSearchCV(pipeline, cv=10, param_grid=param_grid)
