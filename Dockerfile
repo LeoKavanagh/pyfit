@@ -1,11 +1,13 @@
 FROM ubuntu:16.04
 
-RUN useradd -ms /bin/bash pyfit
+# RUN useradd -ms /bin/bash pyfit
+RUN useradd -m pyfit && echo "pyfit:pyfit" | chpasswd && adduser pyfit sudo
 
 # R pre-requisites
 RUN apt-get update && \
     apt-get install -y \
     python3-pip python3-dev python3-venv \
+    sudo \
     r-base-core \
     fonts-dejavu \
     tzdata \
@@ -46,4 +48,4 @@ RUN chown -R pyfit:pyfit ./
 USER pyfit
 
 EXPOSE 5000
-ENTRYPOINT ["./boot.sh"]
+CMD /bin/bash
