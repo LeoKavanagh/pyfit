@@ -196,39 +196,36 @@ def get_dataset(access_token, start_date, end_date, data_source):
 
     return dat
 
-
-
-
-
-def main():
-    
-    secrets_file = os.environ['GOOGLE_WEB_APPLICATION_CREDENTIALS']
-    access_token = authorize()
-
-    data_sources = get_data_sources(access_token)
-
-    sleep_sources = [a['dataStreamId'] for a in data_sources['dataSource'] 
-                     if 'sleep' in a['dataStreamId']]
-    heart_sources = [a['dataStreamId'] for a in data_sources['dataSource'] 
-                     if 'heart' in a['dataStreamId']]
-
-    start_date = dt.date(2018, 8, 1)
-    end_date =  dt.date.today() - dt.timedelta(days=1)
-
-    step_request_body = get_steps_request(start_date, end_date)
-    steps = get_agg(step_request_body, access_token)
-    print(steps)
-
-    heart_data_source = ('raw:com.google.heart_rate.bpm:Mobvoi:TicWatch Pro:'
-                        '4841d82c20298413:PAH8011 heart rate PPG')
-    heart = get_dataset(access_token, start_date, end_date, heart_data_source)
-    heart_df = process_heart(heart)
-
-    sleep_request_body = get_sleep_request(start_date, end_date)
-    sleep = get_agg(sleep_request_body, access_token)
-    print(sleep)
-
-
-
-if __name__ == "__main__":
-    main()
+#def main():
+#
+#    secrets_file = os.environ['GOOGLE_WEB_APPLICATION_CREDENTIALS']
+#    access_token = authorize()
+#
+#    data_sources = get_data_sources(access_token)
+#
+#    sleep_sources = [a['dataStreamId'] for a in data_sources['dataSource'] 
+#                     if 'sleep' in a['dataStreamId']]
+#    heart_sources = [a['dataStreamId'] for a in data_sources['dataSource'] 
+#                     if 'heart' in a['dataStreamId']]
+#
+#    # Roughly when I started wearing the WearOS watch
+#    start_date = dt.date(2018, 8, 1)
+#    end_date =  dt.date.today() - dt.timedelta(days=1)
+#
+#    # step_request_body = get_steps_request(start_date, end_date)
+#    # steps = get_agg(step_request_body, access_token)
+#    # print(steps)
+#
+#    heart_data_source = ('raw:com.google.heart_rate.bpm:Mobvoi:TicWatch Pro:'
+#                        '4841d82c20298413:PAH8011 heart rate PPG')
+#    heart = get_dataset(access_token, start_date, end_date, heart_data_source)
+#    heart_df = process_heart(heart)
+#
+#    sleep_request_body = get_sleep_request(start_date, end_date)
+#    sleep = get_agg(sleep_request_body, access_token)
+#    print(sleep)
+#
+#
+#
+#if __name__ == "__main__":
+#    main()
