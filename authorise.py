@@ -9,12 +9,12 @@ import subprocess
 from requests.exceptions import ConnectionError
 
 
-def get_authorization_url(secrets_file):
+def get_authorization_url(secrets_file_path):
 
     # Use the client_secret.json file to identify the application requesting
     # authorization. The client ID (from that file) and access scopes are required.
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        secrets_file,
+        secrets_file_path,
         scopes=['https://www.googleapis.com/auth/fitness.activity.read',
                 'https://www.googleapis.com/auth/fitness.activity.write',
                 'https://www.googleapis.com/auth/fitness.blood_glucose.read',
@@ -55,15 +55,13 @@ def get_authorization_url(secrets_file):
 
 def get_access_token(secrets_file, code):
 
-    with open(secrets_file, 'r') as f:
-              things = json.load(f)
 
     url = 'https://www.googleapis.com/oauth2/v4/token'
 
     data = {'code': code,
-            'client_id': things['web']['client_id'],
-            'client_secret': things['web']['client_secret'],
-            'redirect_uri': things['web']['redirect_uris'][0],
+            'client_id': secrets_file['web']['client_id'],
+            'client_secret': secrets_file['web']['client_secret'],
+            'redirect_uri': secrets_file['web']['redirect_uris'][0],
             'grant_type': 'authorization_code'}
 
     r = requests.post('https://www.googleapis.com/oauth2/v4/token', data=data)
@@ -76,14 +74,18 @@ def get_access_token(secrets_file, code):
 def authorize():
 
     try:    
-        r = requests.get('http://0.0.0.0:8080')
+        r = requests.get('http://localhost:8080')
         print('done')
     except ConnectionError:
         raise ConnectionError('Turn on the flask server')
 
 
-    secrets_file = os.environ['GOOGLE_WEB_APPLICATION_CREDENTIALS']
-    auth_url = get_authorization_url(secrets_file)
+    secrets_file_path = os.environ['GOOGLE_WEB_APPLICATION_CREDENTIALS']
+
+    with open(secrets_file_path, 'r') as f:
+        secrets_file = json.load(f)
+
+    auth_url = get_authorization_url(secrets_file_path)
     print('Go to {}'.format(auth_url))
 
     code = input('\n\nEnter the code: ')

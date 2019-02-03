@@ -28,7 +28,7 @@ df = heart_df \
     .join(sleep_df, how='inner')
 
 df.columns = ['mean_rate', 'sd_rate', 'rate_range',
-              'minutesAwake', 'minutesDeepSleep', 'minutesLightSleep', 
+              'minutesAwake', 'minutesDeepSleep', 'minutesLightSleep',
               'minutesREMSleep', 'deep_sleep_prop']
 
 df.deep_sleep_prop = df.deep_sleep_prop * deep_sleep_adj
@@ -36,3 +36,4 @@ df['dsp_lag'] = df.deep_sleep_prop.shift(1)
 
 print(df.head())
 df.to_csv('datasets/google_training_data.csv')
+
