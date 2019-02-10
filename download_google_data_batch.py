@@ -11,22 +11,16 @@ from google_fit_utils import (get_steps_request,
                               get_agg,
                               get_dataset)
 
-def main():
+def download_google_data_batch(access_token):
+    """
+    :param access_token: string. from oath2
+    :return: None
+    """
 
-    secrets_file = os.environ['GOOGLE_WEB_APPLICATION_CREDENTIALS']
-    access_token = authorize()
-
+    # Date the google data starts
     start_date = dt.date(2018, 8, 1)
+
     end_date =  dt.date.today() - dt.timedelta(days=1)
-
-    # There's seemingly a limit to the range allowed in an aggregate dataset
-    # but it's not at all clear from the documentation what this limit is.
-
-    # step_request_body = get_steps_request(start_date, end_date)
-    # steps = get_agg(step_request_body, access_token)
-
-    # with open('data/google/google_steps.json', 'w') as f:
-    #     json.dump(steps, f)
 
     heart_data_source = ('derived:com.google.heart_rate.bpm:'
                          'com.google.android.gms:merge_heart_rate_bpm')
@@ -43,6 +37,13 @@ def main():
 
     with open('data/google/google_sleep.json', 'w') as f:
         json.dump(sleep, f)
+
+
+def main():
+
+    access_token = authorize()
+    download_google_data_batch(access_token)
+
 
 if __name__ == "__main__":
     main()
