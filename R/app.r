@@ -2,6 +2,8 @@ library(shiny)
 library(shinydashboard)
 library(ggplot2)
 
+options(shiny.port = 8888)
+
 ui <- dashboardPage(
   dashboardHeader(title = "Fit"),
 
@@ -47,11 +49,12 @@ server <- function(input, output) {
   histdata <- rnorm(500)
 
   data_df = read.csv('google_training_data.csv')
+  data_df$date = as.Date(data_df$date)
 
   # plot1, plot2 and slider are named as strings in ui
   output$plot1 <- renderPlot({
-    data <- data_df[seq_len(input$slider), 2]
-    hist(data)
+    ggplot(data_df, aes(date, deep_sleep_prop)) + geom_line() +
+          scale_x_date("%b-%Y") + xlab("Date") + ylab("Deep Sleep Proportion")
   })
 
   output$plot2 <- renderPlot({
