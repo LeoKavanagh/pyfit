@@ -1,6 +1,7 @@
 import pandas as pd
 import datetime as dt
 import json
+import s3fs
 
 
 def process_steps(steps_dict):
@@ -146,10 +147,23 @@ def clean_google_data(raw_heart_data, raw_sleep_data):
 def save_data(df, path):
     """
     Side effect function to be expanded later to handle S3, GCP etc
+
+    Saving as csv so that R/Shiny can read it easily later
     :param df: pandas dataframe
     """
 
-    df.to_csv(path)
+    # See https://stackoverflow.com/questions/38154040
+
+    # AWS credentials read from .aws I presume
+    fs = s3fs.S3FileSystem()
+
+    # 1. Change the entire dataframe a string by passing None to to_csv
+    # 2. Then convert to bytes
+    bytes_to_write = df.to_csv(None).encode()
+
+    # 3. Then save as binary file in S3
+    with fs.open(path, 'wb') as f:
+        f.write(bytes_to_write)
 
 
 def main():
@@ -161,7 +175,7 @@ def main():
         raw_sleep_data = json.load(f)
 
     processed_data = clean_google_data(raw_heart_data, raw_sleep_data)
-    save_data(processed_data, 'datasets/google_training_data.csv')
+    save_data(processed_data, 's3://lkfit/google_training_data')
 
-if __name__=='main':
+if __name__=='__main__':
     main()
