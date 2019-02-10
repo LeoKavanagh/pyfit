@@ -1,5 +1,6 @@
 library(shiny)
 library(shinydashboard)
+library(ggplot2)
 
 ui <- dashboardPage(
   dashboardHeader(title = "Fit"),
@@ -32,32 +33,31 @@ ui <- dashboardPage(
 	    title = "Scatter plot controls",
 	    sliderInput("scatterPlotSlider", "Number of observations", 1, 100, 50)
 	  )
-	),
+	)),
 
       # Second tab content
-      tabItem(tabName = "widgets",
-        h2("Widgets tab content")
-      )
+      tabItem(tabName = "widgets", h2("Widgets tab content"))
     )
   )
 )
-)
+
 
 server <- function(input, output) {
   set.seed(122)
   histdata <- rnorm(500)
 
+  data_df = read.csv('google_training_data.csv')
+
   # plot1, plot2 and slider are named as strings in ui
   output$plot1 <- renderPlot({
-    data <- histdata[seq_len(input$slider)]
+    data <- data_df[seq_len(input$slider), 2]
     hist(data)
   })
 
   output$plot2 <- renderPlot({
-    data <- histdata[seq_len(input$scatterPlotSlider)]
-    plot(data, main = "This is defined in server")
+    ggplot(data_df, aes(mean_rate, deep_sleep_prop)) + geom_point() +
+           xlab("Mean Heart Rate") + ylab("Deep Sleep Proportion")
   })
-
 
 }
 
