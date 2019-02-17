@@ -1,12 +1,12 @@
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
+from googleapiclient.discovery import build
 import os
 import requests
 from flask import request
 import json
 import datetime as dt
 import pandas as pd
-from authorise import authorize
 
 
 def get_data_sources(access_token):
@@ -63,21 +63,19 @@ def get_agg(request_body, access_token):
     return dat
 
 
-def get_dataset(access_token, start_date, end_date, data_source):
-
-    headers = {'Content-Type': 'application/json',
-           'Authorization': 'Bearer {}'.format(access_token)}
+def get_dataset(credentials, start_date, end_date, data_source):
 
     start_time_nanos = get_epoch(start_date, scale='nanos')
     end_time_nanos = get_epoch(end_date, scale='nanos')
+    data_set = "{0}-{1}".format(end_time_nanos, start_time_nanos)
 
-    base = 'https://www.googleapis.com/fitness/v1/users/me/dataSources/'
+    fitness = build('fitness', 'v1', credentials=credentials)
 
-    url = base + data_source + '/datasets/' \
-        + str(end_time_nanos) \
-        + '-' + str(start_time_nanos)        
-
-    resp = requests.get(url, headers=headers)
-    dat = json.loads(resp.content.decode('utf-8'))
+    dat = fitness \
+        .users() \
+        .dataSources() \
+        .datasets() \
+        .get(userId='me', dataSourceId=data_source, datasetId=data_set) \
+        .execute()
 
     return dat
