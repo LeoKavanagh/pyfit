@@ -1,7 +1,9 @@
+.gitignore
 *.png
 *.swp
 *.swo
 *.csv
 *.json
+*.pickle
 venv/
 __pycache__/
