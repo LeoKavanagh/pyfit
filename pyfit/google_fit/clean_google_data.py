@@ -40,7 +40,7 @@ def process_heart(heart_dict):
 
     heart_df['date'] = heart_df['datetime'] \
         .apply(lambda x: pd.datetime.date(x))
-    
+
     heart_df = heart_df.set_index('date')
 
     # day of week
