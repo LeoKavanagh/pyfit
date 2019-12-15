@@ -77,7 +77,7 @@ def download_google_data_batch(credentials):
 
 def main():
 
-    with open('/home/leo/repos/pyfit/credentials.pickle', 'rb') as f:
+    with open(os.environ['GOOGLE_CREDENTIALS_PICKLE'], 'rb') as f:
         credentials = pickle.load(f)
 
     download_google_data_batch(credentials)
