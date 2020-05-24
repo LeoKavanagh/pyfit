@@ -70,7 +70,7 @@ pyparsing==2.2.1
 pystan==2.19.0.0
 python-dateutil==2.7.3
 pytz==2018.5
-PyYAML==3.13
+PyYAML==5.1
 querystring-parser==1.2.3
 requests==2.21.0
 requests-oauthlib==1.0.0
